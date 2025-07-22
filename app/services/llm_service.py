@@ -33,8 +33,64 @@ class LLMService:
 
 Your task is to analyze user descriptions and generate JSON specifications for system architecture diagrams.
 
-Always respond with valid JSON using this exact format:
+You must respond with valid JSON that conforms to this JSON schema:
 
+{{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["diagram", "nodes"],
+  "properties": {{
+    "diagram": {{
+      "type": "object",
+      "required": ["name", "filename", "show"],
+      "properties": {{
+        "name": {{"type": "string"}},
+        "filename": {{"type": "string"}},
+        "show": {{"type": "boolean"}}
+      }}
+    }},
+    "nodes": {{
+      "type": "array",
+      "items": {{
+        "type": "object",
+        "required": ["id", "type", "label"],
+        "properties": {{
+          "id": {{"type": "string"}},
+          "type": {{"type": "string"}},
+          "label": {{"type": "string"}}
+        }}
+      }}
+    }},
+    "clusters": {{
+      "type": "array",
+      "items": {{
+        "type": "object",
+        "required": ["id", "name", "nodes"],
+        "properties": {{
+          "id": {{"type": "string"}},
+          "name": {{"type": "string"}},
+          "nodes": {{
+            "type": "array",
+            "items": {{"type": "string"}}
+          }}
+        }}
+      }}
+    }},
+    "edges": {{
+      "type": "array", 
+      "items": {{
+        "type": "object",
+        "required": ["from", "to"],
+        "properties": {{
+          "from": {{"type": "string"}},
+          "to": {{"type": "string"}}
+        }}
+      }}
+    }}
+  }}
+}}
+
+Example response format:
 {{
   "diagram": {{
     "name": "Architecture Name",
@@ -57,7 +113,7 @@ Rules:
 2. Create logical connections between components  
 3. Group related nodes in clusters if mentioned
 4. Use descriptive labels and IDs
-5. Return ONLY valid JSON, no explanations"""
+5. Return ONLY valid JSON that matches the schema, no explanations"""
 
         user_prompt = f"Create a diagram specification for: {description}"
         

@@ -18,7 +18,7 @@ DIAGRAM_TOOLS = {
     
     # AWS Database
     "aws.database.RDS": "RDS Database",
-    "aws.database.DynamoDB": "DynamoDB NoSQL",
+    "aws.database.Dynamodb": "DynamoDB NoSQL",
     "aws.database.ElastiCache": "ElastiCache",
     "aws.database.Redshift": "Redshift Data Warehouse",
     
@@ -30,7 +30,6 @@ DIAGRAM_TOOLS = {
     # AWS Integration
     "aws.integration.SQS": "SQS Queue",
     "aws.integration.SNS": "SNS Notifications",
-    "aws.integration.SES": "SES Email Service",
     
     # AWS Security
     "aws.security.IAM": "IAM Identity Management",
@@ -53,24 +52,23 @@ DIAGRAM_TOOLS = {
     # GCP Database  
     "gcp.database.SQL": "Cloud SQL",
     "gcp.database.Firestore": "Firestore NoSQL",
-    "gcp.database.BigQuery": "BigQuery Data Warehouse",
     
     # GCP Storage
     "gcp.storage.GCS": "Cloud Storage",
     
     # Azure Compute
-    "azure.compute.VirtualMachines": "Virtual Machine",
+    "azure.compute.VM": "Virtual Machine",
     "azure.compute.AKS": "Azure Kubernetes Service",
     "azure.compute.FunctionApps": "Function Apps",
     
     # Azure Network
-    "azure.network.LoadBalancer": "Load Balancer",
+    "azure.network.LoadBalancers": "Load Balancer",
     "azure.network.ApplicationGateway": "Application Gateway",
-    "azure.network.CDN": "Azure CDN",
+    "azure.network.CDNProfiles": "Azure CDN",
     
     # Azure Database
     "azure.database.SQLDatabases": "SQL Database",
-    "azure.database.CosmosDB": "Cosmos DB",
+    "azure.database.CosmosDb": "Cosmos DB",
     
     # Azure Storage
     "azure.storage.BlobStorage": "Blob Storage"
