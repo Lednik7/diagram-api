@@ -9,7 +9,7 @@ Async, stateless Python API service for creating architecture diagrams using nat
 - Stateless architecture (no database)
 - LLM agent with tools for diagrams package
 - Docker containerization
-- OpenRouter API integration (Claude 3.5 Sonnet)
+- OpenRouter API integration (Claude Sonnet-4)
 
 ## Quick Start
 
@@ -131,7 +131,7 @@ curl -X POST http://localhost:8000/generate-diagram \
 - **FastAPI**: Async web framework
 - **OpenRouter**: LLM API integration  
 - **Diagrams**: Python library for architecture diagrams
-- **LLM Agent**: Claude 3.5 Sonnet with custom tools
+- **LLM Agent**: Claude Sonnet-4 with custom tools
 
 ### Supported Node Types
 - **AWS Components**: EC2, ALB, RDS, S3, API Gateway, SQS, CloudWatch
