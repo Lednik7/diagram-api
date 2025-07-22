@@ -1,78 +1,61 @@
 # Diagram API
 
-Simple API for creating architecture diagrams through natural language using LLM.
+Async, stateless Python API service for creating architecture diagrams using natural language with LLM agents.
 
 ## Features
 
-- FastAPI for async API
-- OpenRouter LLM API integration (Claude 3.5 Sonnet)
+- FastAPI async framework
+- UV package management
+- Stateless architecture (no database)
 - LLM agent with tools for diagrams package
-- Gradio assistant web interface
-- Supports 45+ components (AWS, GCP, Azure)
-- Assistant with context and memory
 - Docker containerization
-- Stateless architecture
+- OpenRouter API integration (Claude 3.5 Sonnet)
 
-## Установка
+## Quick Start
 
-1. Установите UV:
+### Local Development
+
+1. Install UV:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-2. Склонируйте проект:
+2. Clone and setup:
 ```bash
 git clone <repo-url>
 cd diagram-api
-```
-
-3. Настройте окружение:
-```bash
 cp .env.example .env
-# Добавьте ваш OPENROUTER_API_KEY в .env
+# Add your OPENROUTER_API_KEY in .env
 ```
 
-4. Установите зависимости:
+3. Install dependencies and run:
 ```bash
 uv sync
-```
-
-5. Запустите API сервер:
-```bash
 uv run python main.py
 ```
 
-API доступен на http://localhost:8000
+API available at http://localhost:8000
 
-6. Запустите веб-интерфейс ассистента (опционально):
-```bash
-# В новом терминале
-uv run python gradio_app.py
-```
-
-Веб-интерфейс доступен на http://localhost:7860
-
-## Docker
+### Docker
 
 ```bash
-# Настройте .env с вашим API ключом
+# Configure .env with your API key
 docker-compose up --build
 ```
 
-## API
+## API Endpoints
 
 ### POST /generate-diagram
+Creates architecture diagram from natural language description.
 
-Создает диаграмму из текстового описания.
-
-**Запрос:**
-```json
-{
-  "description": "Create a web application with load balancer and database"
-}
+**Example:**
+```bash
+curl -X POST http://localhost:8000/generate-diagram \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Web application with load balancer, two EC2 instances, and RDS database"}'
 ```
 
-**Ответ:**
+**Response:**
 ```json
 {
   "image_data": "base64_encoded_png_image",
@@ -80,54 +63,111 @@ docker-compose up --build
 }
 ```
 
-### Другие endpoints
+### POST /assistant (Bonus)
+Interactive assistant for architecture discussions and diagram generation.
 
-- `GET /` - Информация о сервисе
-- `GET /health` - Проверка работоспособности
-- `GET /docs` - Swagger документация
-
-## Пример использования
-
-### Веб-интерфейс (рекомендуется)
-1. Запустите API сервер: `uv run python main.py`
-2. Запустите веб-интерфейс: `uv run python gradio_app.py`
-3. Откройте http://localhost:7860
-4. Общайтесь с ассистентом в чате или генерируйте диаграммы напрямую
-
-### API напрямую
-```python
-import requests
-
-response = requests.post(
-    "http://localhost:8000/generate-diagram",
-    json={"description": "Web app with load balancer, servers and database"}
-)
-
-image_data = response.json()["image_data"]
-# Декодируйте base64 и сохраните PNG
+**Example:**
+```bash
+curl -X POST http://localhost:8000/assistant \
+  -H "Content-Type: application/json" \
+  -d '{"message": "I need help designing a microservices architecture"}'
 ```
 
-### Ассистент API
-```python
-response = requests.post(
-    "http://localhost:8000/assistant",
-    json={"message": "Create a microservices architecture"}
-)
+### Other endpoints
+- `GET /` - Service info
+- `GET /health` - Health check
+- `GET /docs` - API documentation
 
-data = response.json()
-print(data["response"])  # Ответ ассистента
-if data.get("image_data"):  # Диаграмма сгенерирована
-    # Обработать изображение
+## Web Interface
+
+Optional Gradio web interface for easier interaction:
+
+```bash
+# In separate terminal after starting API
+uv run python gradio_app.py
 ```
 
-## Требования
+Open http://localhost:7860 for chat interface with diagram generation.
+
+## Example Inputs/Outputs
+
+### Example 1: Basic Web Application
+**Input:** 
+```
+"Create a diagram showing a basic web application with an Application Load Balancer, two EC2 instances for the web servers, and an RDS database for storage. The web servers should be in a cluster named 'Web Tier'."
+```
+
+**Output:** PNG diagram with ALB → EC2 cluster → RDS database
+
+### Example 2: Microservices Architecture  
+**Input:**
+```
+"Design a microservices architecture with three services: an authentication service, a payment service, and an order service. Include an API Gateway for routing, an SQS queue for message passing between services, and a shared RDS database. Group the services in a cluster called 'Microservices'. Add CloudWatch for monitoring."
+```
+
+**Output:** PNG diagram with API Gateway → Microservices cluster → SQS → RDS + CloudWatch
+
+## Testing
+
+Run tests:
+```bash
+uv run python run_tests.py
+```
+
+Test API manually:
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Generate diagram
+curl -X POST http://localhost:8000/generate-diagram \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Simple web app with database"}'
+```
+
+## Architecture
+
+### Core Components
+- **FastAPI**: Async web framework
+- **OpenRouter**: LLM API integration  
+- **Diagrams**: Python library for architecture diagrams
+- **LLM Agent**: Claude 3.5 Sonnet with custom tools
+
+### Supported Node Types
+- **AWS Components**: EC2, ALB, RDS, S3, API Gateway, SQS, CloudWatch
+- **Generic Components**: Web servers, databases, load balancers
+- **Microservices**: API gateways, service clusters, message queues
+
+### Agent Tools
+Custom tools built around diagrams package:
+1. **create_diagram**: Creates new diagram with title
+2. **add_cluster**: Groups related components
+3. **add_node**: Adds individual components
+4. **connect_nodes**: Creates connections between components
+5. **render_diagram**: Generates final PNG image
+
+## Requirements
 
 - Python 3.11+
-- OpenRouter API ключ
-- Graphviz (для диаграмм)
+- OpenRouter API key
+- Graphviz (for diagram rendering)
 
-## Ограничения
+## Considerations & Limitations
 
-- Создает фиксированную 3-tier архитектуру
-- Только AWS компоненты
-- LLM используется только для генерации заголовка
+- **Stateless**: No session storage or database
+- **LLM Dependency**: Requires OpenRouter API key
+- **Diagram Package**: Uses Python diagrams library as "black box"
+- **Supported Architectures**: Primarily AWS components
+- **Image Format**: Returns base64 PNG only
+- **Rate Limits**: Subject to OpenRouter API limits
+
+## Error Handling
+
+- Invalid inputs return 400 Bad Request
+- LLM API errors return 500 with details  
+- Temporary files are automatically cleaned up
+- Comprehensive logging for debugging
+
+## License
+
+MIT License
